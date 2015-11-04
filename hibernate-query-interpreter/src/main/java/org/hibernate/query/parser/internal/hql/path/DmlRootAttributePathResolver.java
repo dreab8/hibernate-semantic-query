@@ -6,6 +6,7 @@
  */
 package org.hibernate.query.parser.internal.hql.path;
 
+import org.hibernate.query.parser.internal.FromClauseIndex;
 import org.hibernate.query.parser.internal.FromElementBuilder;
 import org.hibernate.query.parser.internal.ParsingContext;
 import org.hibernate.sqm.query.from.FromElement;
@@ -56,5 +57,10 @@ public class DmlRootAttributePathResolver extends StandardAttributePathResolverT
 	@Override
 	protected ParsingContext parsingContext() {
 		return parsingContext;
+	}
+
+	@Override
+	protected FromClauseIndex getFromClauseIdeIndex() {
+		return null;
 	}
 }

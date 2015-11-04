@@ -6,6 +6,7 @@
  */
 package org.hibernate.query.parser.internal.hql.phase1;
 
+import org.hibernate.query.parser.internal.FromClauseIndex;
 import org.hibernate.sqm.query.from.FromClause;
 
 /**
@@ -14,13 +15,17 @@ import org.hibernate.sqm.query.from.FromClause;
  */
 public class FromClauseStackNode {
 	private FromClause fromClause;
+	private FromClauseIndex fromClauseIndex;
+
 	private FromClauseStackNode parentNode;
 
-	public FromClauseStackNode(FromClause fromClause) {
+	public FromClauseStackNode(FromClause fromClause, FromClauseIndex fromClauseIndex) {
 		this.fromClause = fromClause;
+		this.fromClauseIndex = fromClauseIndex;
 	}
 
 	public FromClauseStackNode(FromClause fromClause, FromClauseStackNode parentNode) {
+		this.fromClauseIndex = new FromClauseIndex( parentNode.getFromClauseIndex() );
 		this.fromClause = fromClause;
 		this.parentNode = parentNode;
 	}
@@ -35,5 +40,9 @@ public class FromClauseStackNode {
 
 	public boolean hasParent() {
 		return parentNode != null;
+	}
+
+	public FromClauseIndex getFromClauseIndex(){
+		return fromClauseIndex;
 	}
 }

@@ -9,22 +9,32 @@ package org.hibernate.query.parser.internal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.query.parser.AliasCollisionException;
-
 /**
  * @author Andrea Boriero
  */
 public class AliasRegistry {
-	Set<String> aliases;
 
+	private final Set<String> identificationVariableAliasRegistry;
+	private final Set<String> resultVariableAliasRegistry;
+
+	private String lastIdentificationAlias;
+
+	private boolean strict = false;
 	public AliasRegistry() {
-		this.aliases = new HashSet<String>();
+		this.resultVariableAliasRegistry = new HashSet<String>();
+		this.identificationVariableAliasRegistry = new HashSet<String>();
 	}
 
-	public void registerAlias(String alias) {
-		if ( aliases.contains( alias ) ) {
-			throw new AliasCollisionException( "Alias collision, alias " + alias + " is used in a different clause" );
+	public void registerResultVariableAlias(String alias) {
+		if ( resultVariableAliasRegistry.contains( alias ) ) {
+//			throw new AliasCollisionException( "Alias collision, alias " + alias + " is used in a different clause" );
 		}
-		aliases.add( alias );
+		resultVariableAliasRegistry.add( alias );
+		lastIdentificationAlias = null;
+	}
+
+	public void registerIdentificationVariableAlias(String alias) {
+		lastIdentificationAlias = alias;
+		identificationVariableAliasRegistry.add( alias );
 	}
 }

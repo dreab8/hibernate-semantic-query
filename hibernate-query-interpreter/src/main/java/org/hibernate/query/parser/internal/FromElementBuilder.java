@@ -6,6 +6,8 @@
  */
 package org.hibernate.query.parser.internal;
 
+import org.jboss.logging.Logger;
+
 import org.hibernate.query.parser.ParsingException;
 import org.hibernate.sqm.domain.AttributeDescriptor;
 import org.hibernate.sqm.domain.EntityTypeDescriptor;
@@ -16,8 +18,6 @@ import org.hibernate.sqm.query.from.FromElementSpace;
 import org.hibernate.sqm.query.from.QualifiedAttributeJoinFromElement;
 import org.hibernate.sqm.query.from.RootEntityFromElement;
 
-import org.jboss.logging.Logger;
-
 /**
  * @author Steve Ebersole
  */
@@ -25,11 +25,9 @@ public class FromElementBuilder {
 	private static final Logger log = Logger.getLogger( FromElementBuilder.class );
 
 	private final ParsingContext parsingContext;
-	private final FromClauseIndex fromClauseIndex;
 
-	public FromElementBuilder(ParsingContext parsingContext, FromClauseIndex fromClauseIndex) {
+	public FromElementBuilder(ParsingContext parsingContext) {
 		this.parsingContext = parsingContext;
-		this.fromClauseIndex = fromClauseIndex;
 	}
 
 	/**
@@ -44,6 +42,7 @@ public class FromElementBuilder {
 	public RootEntityFromElement makeRootEntityFromElement(
 			FromElementSpace fromElementSpace,
 			EntityTypeDescriptor entityTypeDescriptor,
+			FromClauseIndex fromClauseIndex,
 			String alias) {
 		if ( alias == null ) {
 			alias = parsingContext.getImplicitAliasGenerator().buildUniqueImplicitAlias();
@@ -55,7 +54,7 @@ public class FromElementBuilder {
 		}
 		final RootEntityFromElement root = new RootEntityFromElement( fromElementSpace, alias, entityTypeDescriptor );
 		fromElementSpace.setRoot( root );
-		registerAlias( root );
+		registerAlias( root, fromClauseIndex );
 		return root;
 	}
 
@@ -72,6 +71,7 @@ public class FromElementBuilder {
 	public CrossJoinedFromElement makeCrossJoinedFromElement(
 			FromElementSpace fromElementSpace,
 			EntityTypeDescriptor entityTypeDescriptor,
+			FromClauseIndex fromClauseIndex,
 			String alias) {
 		if ( alias == null ) {
 			alias = parsingContext.getImplicitAliasGenerator().buildUniqueImplicitAlias();
@@ -84,7 +84,7 @@ public class FromElementBuilder {
 
 		final CrossJoinedFromElement join = new CrossJoinedFromElement( fromElementSpace, alias, entityTypeDescriptor );
 		fromElementSpace.addJoin( join );
-		registerAlias( join );
+		registerAlias( join, fromClauseIndex );
 		return join;
 	}
 
@@ -92,6 +92,7 @@ public class FromElementBuilder {
 			FromElementSpace fromElementSpace,
 			FromElement lhs,
 			AttributeDescriptor attributeDescriptor,
+			FromClauseIndex fromClauseIndex,
 			String alias,
 			JoinType joinType,
 			boolean fetched) {
@@ -121,12 +122,12 @@ public class FromElementBuilder {
 				fetched
 		);
 		fromElementSpace.addJoin( join );
-		registerAlias( join );
+		registerAlias( join, fromClauseIndex );
 		registerPath( join );
 		return join;
 	}
 
-	private void registerAlias(FromElement fromElement) {
+	private void registerAlias(FromElement fromElement, FromClauseIndex fromClauseIndex) {
 		final String alias = fromElement.getAlias();
 
 		if ( alias == null ) {

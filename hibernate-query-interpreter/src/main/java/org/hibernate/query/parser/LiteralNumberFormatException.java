@@ -6,6 +6,8 @@
  */
 package org.hibernate.query.parser;
 
+import org.hibernate.sqm.query.SemanticException;
+
 /**
  * @author Steve Ebersole
  */

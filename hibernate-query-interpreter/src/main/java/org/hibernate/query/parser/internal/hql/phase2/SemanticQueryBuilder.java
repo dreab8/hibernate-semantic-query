@@ -6,8 +6,8 @@
  */
 package org.hibernate.query.parser.internal.hql.phase2;
 
-import org.hibernate.query.parser.NotYetImplementedException;
 import org.hibernate.query.parser.ParsingException;
+import org.hibernate.query.parser.internal.FromClauseIndex;
 import org.hibernate.query.parser.internal.hql.antlr.HqlParser;
 import org.hibernate.query.parser.internal.ParsingContext;
 import org.hibernate.query.parser.internal.hql.AbstractHqlParseTreeVisitor;
@@ -40,7 +40,7 @@ public class SemanticQueryBuilder extends AbstractHqlParseTreeVisitor {
 	private FromClauseStackNode currentFromClauseNode;
 
 	public SemanticQueryBuilder(ParsingContext parsingContext, FromClauseProcessor fromClauseProcessor) {
-		super( parsingContext, fromClauseProcessor.getFromElementBuilder(), fromClauseProcessor.getFromClauseIndex() );
+		super( parsingContext, fromClauseProcessor.getFromElementBuilder() );
 		this.fromClauseProcessor = fromClauseProcessor;
 	}
 
@@ -83,7 +83,7 @@ public class SemanticQueryBuilder extends AbstractHqlParseTreeVisitor {
 		attributePathResolverStack.push(
 				new BasicAttributePathResolverImpl(
 						fromClauseProcessor.getFromElementBuilder(),
-						fromClauseProcessor.getFromClauseIndex(),
+						currentFromClauseNode.getFromClauseIndex(),
 						getParsingContext(),
 						currentFromClauseNode
 				)
@@ -93,7 +93,9 @@ public class SemanticQueryBuilder extends AbstractHqlParseTreeVisitor {
 		}
 		finally {
 			attributePathResolverStack.pop();
-			currentFromClauseNode = originalCurrentFromClauseNode;
+			if(originalCurrentFromClauseNode != null) {
+				currentFromClauseNode = originalCurrentFromClauseNode;
+			}
 		}
 	}
 
@@ -106,17 +108,17 @@ public class SemanticQueryBuilder extends AbstractHqlParseTreeVisitor {
 	public OrderByClause visitOrderByClause(HqlParser.OrderByClauseContext ctx) {
 		// use the root FromClause (should be just one) to build an
 		// AttributePathResolver for the order by clause
-		if ( fromClauseProcessor.getFromClauseIndex().getFromClauseStackNodeList().isEmpty() ) {
+		if ( currentFromClauseNode.getFromClauseIndex().getFromClauseStackNodeList().isEmpty() ) {
 			throw new ParsingException( "No root FromClauseStackNodes found; cannot process order-by" );
 		}
-		if ( fromClauseProcessor.getFromClauseIndex().getFromClauseStackNodeList().size() > 1 ) {
+		if ( currentFromClauseNode.getFromClauseIndex().getFromClauseStackNodeList().size() > 1 ) {
 			throw new ParsingException( "Multiple root FromClauseStackNodes found; cannot process order-by" );
 		}
-		FromClauseStackNode rootFromClauseStackNode = fromClauseProcessor.getFromClauseIndex().getFromClauseStackNodeList().get( 0 );
+		FromClauseStackNode rootFromClauseStackNode = currentFromClauseNode.getFromClauseIndex().getFromClauseStackNodeList().get( 0 );
 		attributePathResolverStack.push(
 				new BasicAttributePathResolverImpl(
 						fromClauseProcessor.getFromElementBuilder(),
-						fromClauseProcessor.getFromClauseIndex(),
+						currentFromClauseNode.getFromClauseIndex(),
 						getParsingContext(),
 						rootFromClauseStackNode
 				)

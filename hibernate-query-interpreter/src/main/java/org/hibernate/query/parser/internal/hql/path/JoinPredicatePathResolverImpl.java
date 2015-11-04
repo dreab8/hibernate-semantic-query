@@ -6,7 +6,9 @@
  */
 package org.hibernate.query.parser.internal.hql.path;
 
-import org.hibernate.query.parser.SemanticException;
+import org.hibernate.query.parser.internal.hql.antlr.HqlParser;
+import org.hibernate.sqm.path.AttributePathPart;
+import org.hibernate.sqm.query.SemanticException;
 import org.hibernate.query.parser.internal.FromClauseIndex;
 import org.hibernate.query.parser.internal.FromElementBuilder;
 import org.hibernate.query.parser.internal.ParsingContext;

@@ -11,6 +11,7 @@ import org.hibernate.sqm.query.from.FromClauseContainer;
 import org.hibernate.sqm.query.predicate.WhereClause;
 import org.hibernate.sqm.query.predicate.WhereClauseContainer;
 import org.hibernate.sqm.query.select.SelectClause;
+import org.hibernate.sqm.query.select.Selection;
 
 /**
  * Defines the commonality between a root query and a subquery.
@@ -31,6 +32,7 @@ public class QuerySpec implements FromClauseContainer, WhereClauseContainer {
 			SelectClause selectClause,
 			WhereClause whereClause) {
 		this.fromClause = fromClause;
+		fromClause.checkResultVariableConflict( selectClause );
 		this.selectClause = selectClause;
 		this.whereClause = whereClause;
 	}

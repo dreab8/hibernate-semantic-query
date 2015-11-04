@@ -7,9 +7,12 @@
 package org.hibernate.sqm.query.select;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.hibernate.sqm.query.AliasCollisionException;
 
 /**
  * The semantic select clause.  Defined as a list of individual selections.
@@ -19,18 +22,10 @@ import java.util.List;
 public class SelectClause {
 	private final boolean distinct;
 	private List<Selection> selections;
+	private Set<String> aliases;
 
 	public SelectClause(boolean distinct) {
 		this.distinct = distinct;
-	}
-
-	public SelectClause(boolean distinct, List<Selection> selections) {
-		this.distinct = distinct;
-		this.selections = selections;
-	}
-
-	public SelectClause(boolean distinct, Selection... selections) {
-		this( distinct, Arrays.asList( selections ) );
 	}
 
 	public boolean isDistinct() {
@@ -50,6 +45,20 @@ public class SelectClause {
 		if ( selections == null ) {
 			selections = new ArrayList<Selection>();
 		}
+		registerAlias( selection );
 		selections.add( selection );
+	}
+
+	private void registerAlias(Selection selection) {
+		final String alias = selection.getAlias();
+		if(alias != null) {
+			if ( aliases == null ) {
+				aliases = new HashSet<String>();
+			}
+			if ( aliases.contains( alias ) ) {
+				throw new AliasCollisionException( "Alias collision, alias " + alias + " is already used" );
+			}
+			aliases.add( alias );
+		}
 	}
 }

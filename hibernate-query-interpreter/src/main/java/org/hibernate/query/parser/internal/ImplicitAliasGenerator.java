@@ -7,7 +7,7 @@
 package org.hibernate.query.parser.internal;
 
 /**
- * Handles generating implicit (or synthetic) aliases.
+ * Handles generating implicit (or synthetic) resultVariableAliasRegistry.
  *
  * @author Steve Ebersole
  */

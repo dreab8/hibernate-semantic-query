@@ -6,10 +6,11 @@
  */
 package org.hibernate.query.parser.internal.hql.path;
 
+import org.hibernate.query.parser.internal.FromClauseIndex;
 import org.hibernate.query.parser.internal.FromElementBuilder;
 import org.hibernate.sqm.query.JoinType;
 import org.hibernate.query.parser.internal.ParsingContext;
-import org.hibernate.query.parser.SemanticException;
+import org.hibernate.sqm.query.SemanticException;
 import org.hibernate.sqm.domain.AttributeDescriptor;
 import org.hibernate.sqm.query.from.FromElement;
 
@@ -18,6 +19,7 @@ import org.hibernate.sqm.query.from.FromElement;
  */
 public abstract class AbstractAttributePathResolverImpl implements AttributePathResolver {
 	protected abstract FromElementBuilder fromElementBuilder();
+
 	protected abstract ParsingContext parsingContext();
 
 	protected FromElement resolveAnyIntermediateAttributePathJoins(
@@ -27,7 +29,7 @@ public abstract class AbstractAttributePathResolverImpl implements AttributePath
 		int i = start;
 
 		// build joins for any intermediate path parts
-		while ( i < pathParts.length-1 ) {
+		while ( i < pathParts.length - 1 ) {
 			lhs = buildIntermediateAttributeJoin( lhs, pathParts[i] );
 			i++;
 		}
@@ -42,11 +44,14 @@ public abstract class AbstractAttributePathResolverImpl implements AttributePath
 				lhs.getContainingSpace(),
 				lhs,
 				joinedAttributeDescriptor,
+				getFromClauseIdeIndex(),
 				null,
 				getIntermediateJoinType(),
 				areIntermediateJoinsFetched()
 		);
 	}
+
+	protected abstract FromClauseIndex getFromClauseIdeIndex();
 
 	protected void validateIntermediateAttributeJoin(FromElement lhs, AttributeDescriptor joinedAttributeDescriptor) {
 	}

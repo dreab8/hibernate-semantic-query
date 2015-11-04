@@ -16,7 +16,7 @@
  * <p/>
  * Generally, the parser will throw exceptions as one of 2 types:<ul>
  *     <li>
- *         {@link org.hibernate.query.parser.QueryException} and derivatives represent problems with the
+ *         {@link org.hibernate.sqm.query.QueryException} and derivatives represent problems with the
  *         query itself.
  *     </li>
  *     <li>

@@ -63,4 +63,5 @@ public class FromElementSpace {
 		}
 		joins.add( join );
 	}
+
 }

@@ -9,6 +9,7 @@ package org.hibernate.query.parser.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -31,8 +32,18 @@ public class FromClauseIndex {
 
 	private List<FromClauseStackNode> roots;
 
-	private Map<String,FromElement> fromElementsByAlias = new HashMap<String, FromElement>();
-	private Map<String,FromElement> fromElementsByPath = new HashMap<String, FromElement>();
+	protected Map<String, FromElement> fromElementsByPath = new HashMap<String, FromElement>();
+	protected Map<String, FromElement> fromElementsByAlias = new HashMap<String, FromElement>();
+
+	private FromClauseIndex parent;
+
+	public FromClauseIndex() {
+	}
+
+	public FromClauseIndex(FromClauseIndex parentNode) {
+		this.parent = parentNode;
+		fromElementsByAlias = new HashMap<String, FromElement>();
+	}
 
 	public void registerAlias(FromElement fromElement) {
 		final FromElement old = fromElementsByAlias.put( fromElement.getAlias(), fromElement );
@@ -50,7 +61,13 @@ public class FromClauseIndex {
 	}
 
 	public FromElement findFromElementByAlias(String alias) {
-		return fromElementsByAlias.get( alias );
+		if ( fromElementsByAlias.containsKey( alias ) ) {
+			return fromElementsByAlias.get( alias );
+		}
+		else if ( parent != null ) {
+			return parent.findFromElementByAlias( alias );
+		}
+		return null;
 	}
 
 	public FromElement findFromElementWithAttribute(FromClauseStackNode fromClause, String name) {
@@ -97,5 +114,9 @@ public class FromClauseIndex {
 		else {
 			return Collections.unmodifiableList( roots );
 		}
+	}
+
+	public FromClauseIndex getParent(){
+		return parent;
 	}
 }
