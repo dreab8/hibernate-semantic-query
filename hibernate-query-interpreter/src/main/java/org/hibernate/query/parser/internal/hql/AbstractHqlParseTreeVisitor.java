@@ -255,10 +255,12 @@ public abstract class AbstractHqlParseTreeVisitor extends HqlParserBaseVisitor {
 
 	@Override
 	public Selection visitSelection(HqlParser.SelectionContext ctx) {
-		return new Selection(
+		final Selection selection = new Selection(
 				visitSelectExpression( ctx.selectExpression() ),
 				interpretAlias( ctx.IDENTIFIER(), ctx )
 		);
+		getCurrentFromClauseNode().getFromClauseIndex().registerAlias( selection );
+		return selection;
 	}
 
 	private String interpretAlias(TerminalNode aliasNode, HqlParser.SelectionContext ctx) {

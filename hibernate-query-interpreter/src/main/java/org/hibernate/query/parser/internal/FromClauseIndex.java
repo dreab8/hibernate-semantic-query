@@ -9,17 +9,17 @@ package org.hibernate.query.parser.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.jboss.logging.Logger;
 
 import org.hibernate.query.parser.internal.hql.phase1.FromClauseStackNode;
 import org.hibernate.sqm.query.from.FromElement;
 import org.hibernate.sqm.query.from.FromElementSpace;
 import org.hibernate.sqm.query.from.JoinedFromElement;
-
-import org.jboss.logging.Logger;
+import org.hibernate.sqm.query.select.Selection;
 
 /**
  * Maintains numerous indexes over information and state determined during the Phase 1 processing of
@@ -35,6 +35,7 @@ public class FromClauseIndex {
 	protected Map<String, FromElement> fromElementsByPath = new HashMap<String, FromElement>();
 	protected Map<String, FromElement> fromElementsByAlias = new HashMap<String, FromElement>();
 
+	protected Map<String, Selection> selectionByAlias = new HashMap<String, Selection>();
 	private FromClauseIndex parent;
 
 	public FromClauseIndex() {
@@ -43,6 +44,10 @@ public class FromClauseIndex {
 	public FromClauseIndex(FromClauseIndex parentNode) {
 		this.parent = parentNode;
 		fromElementsByAlias = new HashMap<String, FromElement>();
+	}
+
+	public void registerAlias(Selection selection) {
+		selectionByAlias.put( selection.getAlias(), selection );
 	}
 
 	public void registerAlias(FromElement fromElement) {
@@ -58,6 +63,16 @@ public class FromClauseIndex {
 					)
 			);
 		}
+	}
+
+	public Selection findSelectionByAlias(String alias) {
+		if ( selectionByAlias.containsKey( alias ) ) {
+			return selectionByAlias.get( alias );
+		}
+		else if ( parent != null ) {
+			return parent.findSelectionByAlias( alias );
+		}
+		return null;
 	}
 
 	public FromElement findFromElementByAlias(String alias) {
@@ -116,7 +131,7 @@ public class FromClauseIndex {
 		}
 	}
 
-	public FromClauseIndex getParent(){
+	public FromClauseIndex getParent() {
 		return parent;
 	}
 }

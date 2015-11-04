@@ -246,7 +246,6 @@ public class FromClauseProcessor extends HqlParserBaseListener {
 		// either the thing is important to check or it isn't.
 		assert aliasNode.getSymbol().getType() == HqlParser.IDENTIFIER;
 
-		parsingContext.getAliasRegistry().registerIdentificationVariableAlias( aliasNode.getText() );
 		return aliasNode.getText();
 	}
 

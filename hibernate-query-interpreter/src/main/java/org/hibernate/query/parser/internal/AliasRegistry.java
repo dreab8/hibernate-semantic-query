@@ -6,23 +6,26 @@
  */
 package org.hibernate.query.parser.internal;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
+import org.hibernate.query.parser.internal.hql.phase1.FromClauseStackNode;
 
 /**
  * @author Andrea Boriero
  */
 public class AliasRegistry {
 
-	private final Set<String> identificationVariableAliasRegistry;
+	private final Map<String, FromClauseIndex> identificationVariableAliasRegistry;
 	private final Set<String> resultVariableAliasRegistry;
 
-	private String lastIdentificationAlias;
-
 	private boolean strict = false;
+
 	public AliasRegistry() {
 		this.resultVariableAliasRegistry = new HashSet<String>();
-		this.identificationVariableAliasRegistry = new HashSet<String>();
+		this.identificationVariableAliasRegistry = new HashMap<>();
 	}
 
 	public void registerResultVariableAlias(String alias) {
@@ -30,11 +33,9 @@ public class AliasRegistry {
 //			throw new AliasCollisionException( "Alias collision, alias " + alias + " is used in a different clause" );
 		}
 		resultVariableAliasRegistry.add( alias );
-		lastIdentificationAlias = null;
 	}
 
-	public void registerIdentificationVariableAlias(String alias) {
-		lastIdentificationAlias = alias;
-		identificationVariableAliasRegistry.add( alias );
+	public void registerIdentificationVariableAlias(String context, FromClauseIndex alias) {
+		identificationVariableAliasRegistry.put( context, alias );
 	}
 }
