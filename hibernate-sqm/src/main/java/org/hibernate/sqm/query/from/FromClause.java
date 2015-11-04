@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Contract representing a from clause.
- * <p/>
+ * <p>
  * The parent/child bit represents sub-queries.  The child from clauses are only used for test assertions,
  * but are left here as it is most convenient to maintain them here versus another structure.
  *
@@ -27,6 +27,7 @@ public class FromClause {
 	public void addFromElementSpace(FromElementSpace space) {
 
 	}
+
 	public FromElementSpace makeFromElementSpace() {
 		final FromElementSpace space = new FromElementSpace( this );
 		fromElementSpaces.add( space );

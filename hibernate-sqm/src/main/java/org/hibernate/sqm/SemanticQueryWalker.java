@@ -223,4 +223,5 @@ public interface SemanticQueryWalker<T> {
 	T visitBinaryArithmeticExpression(BinaryArithmeticExpression expression);
 
 	T visitSubQueryExpression(SubQueryExpression expression);
+
 }

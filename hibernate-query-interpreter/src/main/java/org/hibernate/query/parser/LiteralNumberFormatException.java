@@ -9,7 +9,7 @@ package org.hibernate.query.parser;
 /**
  * @author Steve Ebersole
  */
-public class LiteralNumberFormatException extends SemanticException {
+public class LiteralNumberFormatException extends QueryException {
 	public LiteralNumberFormatException(String message) {
 		super( message );
 	}

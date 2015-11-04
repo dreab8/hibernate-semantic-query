@@ -9,7 +9,7 @@ package org.hibernate.query.parser;
 /**
  * @author Andrea Boriero
  */
-public class AliasCollisionException extends SemanticException {
+public class AliasCollisionException extends QueryException {
 	public AliasCollisionException(String message) {
 		super( message );
 	}

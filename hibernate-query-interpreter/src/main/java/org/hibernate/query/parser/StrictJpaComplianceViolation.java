@@ -11,7 +11,7 @@ package org.hibernate.query.parser;
  *
  * @author Steve Ebersole
  */
-public class StrictJpaComplianceViolation extends SemanticException {
+public class StrictJpaComplianceViolation extends QueryException {
 	public enum Type {
 		IMPLICIT_SELECT( "implicit select clause" ),
 		ALIASED_FETCH_JOIN( "aliased fetch join" ),

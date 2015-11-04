@@ -6,6 +6,8 @@
  */
 package org.hibernate.query.parser;
 
+import org.hibernate.query.parser.QueryException;
+
 /**
  * Represents an error in the semantics (meaning) of the passed query.
  *

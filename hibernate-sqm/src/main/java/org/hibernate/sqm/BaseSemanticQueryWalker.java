@@ -500,4 +500,6 @@ public class BaseSemanticQueryWalker implements SemanticQueryWalker {
 	public SubQueryExpression visitSubQueryExpression(SubQueryExpression expression) {
 		return expression;
 	}
+
+
 }

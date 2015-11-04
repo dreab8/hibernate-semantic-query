@@ -115,7 +115,7 @@ public class QuerySpecProcessor implements CriteriaVisitor {
 	private QuerySpecProcessor(ParsingContext parsingContext) {
 		this.parsingContext = parsingContext;
 		this.fromClauseIndex = new FromClauseIndex();
-		this.fromElementBuilder = new FromElementBuilder( parsingContext, fromClauseIndex );
+		this.fromElementBuilder = new FromElementBuilder( parsingContext );
 	}
 
 	public FromClauseIndex getFromClauseIndex() {
@@ -137,6 +137,7 @@ public class QuerySpecProcessor implements CriteriaVisitor {
 			final RootEntityFromElement sqmRoot = fromElementBuilder.makeRootEntityFromElement(
 					space,
 					parsingContext.getConsumerContext().resolveEntityReference( root.getModel().getJavaType().getName() ),
+					fromClauseIndex,
 					root.getAlias()
 			);
 			space.setRoot( sqmRoot );
@@ -153,6 +154,7 @@ public class QuerySpecProcessor implements CriteriaVisitor {
 					space,
 					sqmLhs,
 					sqmLhs.getTypeDescriptor().getAttributeDescriptor( join.getAttribute().getName() ),
+					fromClauseIndex,
 					join.getAlias(),
 					convert( join.getJoinType() ),
 					false
@@ -168,6 +170,7 @@ public class QuerySpecProcessor implements CriteriaVisitor {
 					space,
 					sqmLhs,
 					sqmLhs.getTypeDescriptor().getAttributeDescriptor( fetch.getAttribute().getName() ),
+					fromClauseIndex,
 					parsingContext.getImplicitAliasGenerator().buildUniqueImplicitAlias(),
 					convert( fetch.getJoinType() ),
 					true

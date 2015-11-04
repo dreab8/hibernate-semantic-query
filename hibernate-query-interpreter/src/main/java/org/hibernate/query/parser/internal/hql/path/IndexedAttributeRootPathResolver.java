@@ -6,6 +6,7 @@
  */
 package org.hibernate.query.parser.internal.hql.path;
 
+import org.hibernate.query.parser.internal.FromClauseIndex;
 import org.hibernate.query.parser.internal.hql.antlr.HqlParser;
 import org.hibernate.query.parser.internal.FromElementBuilder;
 import org.hibernate.query.parser.internal.ParsingContext;
@@ -25,14 +26,17 @@ public class IndexedAttributeRootPathResolver extends AbstractAttributePathResol
 	private final FromElementBuilder fromElementBuilder;
 	private final ParsingContext parsingContext;
 	private final IndexedAttributePathPart source;
+	private final FromClauseIndex fromClauseIndex;
 
 	public IndexedAttributeRootPathResolver(
 			FromElementBuilder fromElementBuilder,
 			ParsingContext parsingContext,
-			IndexedAttributePathPart source) {
+			IndexedAttributePathPart source,
+			FromClauseIndex fromClauseIndex) {
 		this.fromElementBuilder = fromElementBuilder;
 		this.parsingContext = parsingContext;
 		this.source = source;
+		this.fromClauseIndex = fromClauseIndex;
 	}
 
 	@Override
@@ -43,6 +47,11 @@ public class IndexedAttributeRootPathResolver extends AbstractAttributePathResol
 	@Override
 	protected ParsingContext parsingContext() {
 		return parsingContext;
+	}
+
+	@Override
+	protected FromClauseIndex getFromClauseIdeIndex() {
+		return null;
 	}
 
 	@Override

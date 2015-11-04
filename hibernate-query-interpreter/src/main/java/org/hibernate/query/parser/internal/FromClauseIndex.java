@@ -13,12 +13,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jboss.logging.Logger;
+
+import org.hibernate.query.parser.AliasCollisionException;
 import org.hibernate.query.parser.internal.hql.phase1.FromClauseStackNode;
 import org.hibernate.sqm.query.from.FromElement;
 import org.hibernate.sqm.query.from.FromElementSpace;
 import org.hibernate.sqm.query.from.JoinedFromElement;
-
-import org.jboss.logging.Logger;
+import org.hibernate.sqm.query.select.SelectClause;
+import org.hibernate.sqm.query.select.Selection;
 
 /**
  * Maintains numerous indexes over information and state determined during the Phase 1 processing of
@@ -31,8 +34,26 @@ public class FromClauseIndex {
 
 	private List<FromClauseStackNode> roots;
 
-	private Map<String,FromElement> fromElementsByAlias = new HashMap<String, FromElement>();
-	private Map<String,FromElement> fromElementsByPath = new HashMap<String, FromElement>();
+	protected Map<String, FromElement> fromElementsByPath = new HashMap<String, FromElement>();
+	protected Map<String, FromElement> fromElementsByAlias = new HashMap<String, FromElement>();
+
+	protected Map<String, Selection> selectionByAlias = new HashMap<String, Selection>();
+	private FromClauseIndex parent;
+
+	public FromClauseIndex() {
+	}
+
+	public FromClauseIndex(FromClauseIndex parentNode) {
+		this.parent = parentNode;
+		fromElementsByAlias = new HashMap<String, FromElement>();
+	}
+
+	public void registerAlias(Selection selection) {
+		if(selection.getAlias() != null) {
+			checkResultVariable( selection );
+			selectionByAlias.put( selection.getAlias(), selection );
+		}
+	}
 
 	public void registerAlias(FromElement fromElement) {
 		final FromElement old = fromElementsByAlias.put( fromElement.getAlias(), fromElement );
@@ -49,8 +70,17 @@ public class FromClauseIndex {
 		}
 	}
 
+	public Selection findSelectionByAlias(String alias) {
+		return selectionByAlias.get( alias );
+	}
+
 	public FromElement findFromElementByAlias(String alias) {
-		return fromElementsByAlias.get( alias );
+		if(fromElementsByAlias.containsKey( alias )) {
+			return fromElementsByAlias.get( alias );
+		}else if( parent != null){
+			return parent.findFromElementByAlias( alias );
+		}
+		return null;
 	}
 
 	public FromElement findFromElementWithAttribute(FromClauseStackNode fromClause, String name) {
@@ -96,6 +126,26 @@ public class FromClauseIndex {
 		}
 		else {
 			return Collections.unmodifiableList( roots );
+		}
+	}
+
+	public FromClauseIndex getParent() {
+		return parent;
+	}
+
+	private void checkResultVariable(Selection selection) {
+		final String alias = selection.getAlias();
+		if ( selectionByAlias.containsKey( alias ) ) {
+			throw new AliasCollisionException( "Alias collision, alias " + alias + " is already used" );
+		}
+		if ( fromElementsByAlias.containsKey( alias ) ) {
+			if ( !selection.getExpression().getTypeDescriptor().equals(
+					fromElementsByAlias.get( alias ).getTypeDescriptor()
+			) ) {
+				throw new AliasCollisionException(
+						"In Select clause is used the alias " + alias + " defined in From clause but referring a different element"
+				);
+			}
 		}
 	}
 }
