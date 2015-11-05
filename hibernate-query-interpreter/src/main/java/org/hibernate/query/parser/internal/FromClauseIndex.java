@@ -76,13 +76,7 @@ public class FromClauseIndex {
 	}
 
 	public FromElement findFromElementByAlias(String alias) {
-		if ( fromElementsByAlias.containsKey( alias ) ) {
-			return fromElementsByAlias.get( alias );
-		}
-		else if ( parent != null ) {
-			return parent.findFromElementByAlias( alias );
-		}
-		return null;
+		return fromElementsByAlias.get( alias );
 	}
 
 	public FromElement findFromElementWithAttribute(FromClauseStackNode fromClause, String name) {
