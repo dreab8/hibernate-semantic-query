@@ -11,6 +11,7 @@ import org.hibernate.query.parser.internal.hql.antlr.HqlParser;
 import org.hibernate.query.parser.internal.ParsingContext;
 import org.hibernate.query.parser.internal.hql.AbstractHqlParseTreeVisitor;
 import org.hibernate.query.parser.internal.hql.path.DmlRootAttributePathResolver;
+import org.hibernate.query.parser.internal.hql.path.OrderByAttributePathResolver;
 import org.hibernate.query.parser.internal.hql.phase1.FromClauseStackNode;
 import org.hibernate.query.parser.internal.hql.phase1.FromClauseProcessor;
 import org.hibernate.sqm.path.AttributePathPart;
@@ -115,9 +116,8 @@ public class SemanticQueryBuilder extends AbstractHqlParseTreeVisitor {
 		}
 		FromClauseStackNode rootFromClauseStackNode = currentFromClauseNode.getFromClauseIndex().getFromClauseStackNodeList().get( 0 );
 		attributePathResolverStack.push(
-				new BasicAttributePathResolverImpl(
-						fromClauseProcessor.getFromElementBuilder(),
-						fromClauseProcessor.getFromClauseIndex(),
+				new OrderByAttributePathResolver(
+						currentFromClauseNode.getFromClauseIndex(),
 						getParsingContext(),
 						rootFromClauseStackNode
 				)
