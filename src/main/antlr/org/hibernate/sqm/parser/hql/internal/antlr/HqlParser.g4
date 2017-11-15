@@ -150,9 +150,7 @@ dynamicInstantiationTarget
 	| dotIdentifierSequence
 	;
 
-dotIdentifierSequence
-	: identifier (DOT identifier)*
-	;
+
 
 path
 	// a SimplePath may be any number of things like:
@@ -163,9 +161,13 @@ path
 	: dotIdentifierSequence												# SimplePath
 	// a Map.Entry cannot be further dereferenced
 	| ENTRY LEFT_PAREN pathAsMap RIGHT_PAREN							# MapEntryPath
-	// only one index-access is allowed per path
+//	 only one index-access is allowed per path
 	| path LEFT_BRACKET expression RIGHT_BRACKET (pathTerminal)?		# IndexedPath
 	| pathRoot (pathTerminal)?											# CompoundPath
+	;
+
+dotIdentifierSequence
+	: identifier (DOT identifier)*
 	;
 
 pathRoot

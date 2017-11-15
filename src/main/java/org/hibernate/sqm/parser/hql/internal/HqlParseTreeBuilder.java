@@ -38,7 +38,7 @@ public class HqlParseTreeBuilder {
 			}
 		};
 
-		HqlParseTreePrinter.logParseTree( parser );
+//		HqlParseTreePrinter.logParseTree( parser );
 
 		return parser;
 	}

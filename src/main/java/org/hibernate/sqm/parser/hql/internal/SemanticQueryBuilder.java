@@ -716,7 +716,7 @@ public class SemanticQueryBuilder extends HqlParserBaseVisitor {
 
 	private String[] splitPathParts(HqlParser.DotIdentifierSequenceContext path) {
 		final String pathText = path.getText();
-		log.debugf( "Splitting dotIdentifierSequence into path parts : %s", pathText );
+//		log.debugf( "Splitting dotIdentifierSequence into path parts : %s", pathText );
 		return PathHelper.split( pathText );
 	}
 
