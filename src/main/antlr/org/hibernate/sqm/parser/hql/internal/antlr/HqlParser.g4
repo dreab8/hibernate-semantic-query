@@ -171,8 +171,7 @@ dotIdentifierSequence
 	;
 
 pathRoot
-	: identifier																			# SimplePathRoot
-	| TREAT LEFT_PAREN dotIdentifierSequence AS dotIdentifierSequence RIGHT_PAREN			# TreatedPathRoot
+	: TREAT LEFT_PAREN dotIdentifierSequence AS dotIdentifierSequence RIGHT_PAREN			# TreatedPathRoot
 	| KEY LEFT_PAREN pathAsMap RIGHT_PAREN												# MapKeyPathRoot
 	| (VALUE | ELEMENTS) LEFT_PAREN collectionReference RIGHT_PAREN				   						# CollectionValuePathRoot
 	;

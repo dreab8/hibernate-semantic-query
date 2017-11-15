@@ -10,6 +10,7 @@ import org.hibernate.sqm.StrictJpaComplianceViolation;
 import org.hibernate.sqm.domain.DomainMetamodel;
 import org.hibernate.sqm.domain.SingularAttributeReference.SingularAttributeClassification;
 import org.hibernate.sqm.parser.InterpretationException;
+import org.hibernate.sqm.parser.SemanticException;
 
 import org.hibernate.test.sqm.ConsumerContextImpl;
 import org.hibernate.test.sqm.domain.EntityTypeImpl;
@@ -36,7 +37,7 @@ public class KeywordAsIdentifierTest {
 			interpret( queryIllegal, consumerContext );
 			fail( "exception failure" );
 		}
-		catch (InterpretationException ignore) {
+		catch (SemanticException ignore) {
 		}
 
 		// first test HQL superset is allowed...
