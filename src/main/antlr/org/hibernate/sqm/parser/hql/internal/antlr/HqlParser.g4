@@ -126,7 +126,7 @@ selection
 	// I have noticed that without this predicate, Antlr will sometimes
 	// interpret `select a.b from Something ...` as `from` being the
 	// select-expression alias
-	: selectExpression (resultIdentifier)?
+	: (dynamicInstantiation | jpaSelectObjectSyntax | expression) (resultIdentifier)?
 	;
 
 resultIdentifier
@@ -134,11 +134,11 @@ resultIdentifier
 	| IDENTIFIER
 	;
 
-selectExpression
-	:	dynamicInstantiation
-	|	jpaSelectObjectSyntax
-	|	expression
-	;
+//selectExpression
+//	:	dynamicInstantiation
+//	|	jpaSelectObjectSyntax
+//	|	expression
+//	;
 
 dynamicInstantiation
 	: NEW dynamicInstantiationTarget LEFT_PAREN dynamicInstantiationArgs RIGHT_PAREN
@@ -172,7 +172,7 @@ pathRoot
 	: identifier																			# SimplePathRoot
 	| TREAT LEFT_PAREN dotIdentifierSequence AS dotIdentifierSequence RIGHT_PAREN			# TreatedPathRoot
 	| KEY LEFT_PAREN pathAsMap RIGHT_PAREN												# MapKeyPathRoot
-	| VALUE LEFT_PAREN collectionReference RIGHT_PAREN				   						# CollectionValuePathRoot
+	| (VALUE | ELEMENTS) LEFT_PAREN collectionReference RIGHT_PAREN				   						# CollectionValuePathRoot
 	;
 
 pathTerminal
@@ -410,7 +410,7 @@ dateTimeLiteralText
 
 parameter
 	: COLON identifier					# NamedParameter
-	| QUESTION_MARK INTEGER_LITERAL		# PositionalParameter
+	| QUESTION_MARK INTEGER_LITERAL?		# PositionalParameter
 	;
 
 function
@@ -514,7 +514,7 @@ concatFunction
 	;
 
 substringFunction
-	: SUBSTRING LEFT_PAREN expression COMMA substringFunctionStartArgument (COMMA substringFunctionLengthArgument)? RIGHT_PAREN
+	: (SUBSTRING | SUBSTR) LEFT_PAREN expression COMMA substringFunctionStartArgument (COMMA substringFunctionLengthArgument)? RIGHT_PAREN
 	;
 
 substringFunctionStartArgument

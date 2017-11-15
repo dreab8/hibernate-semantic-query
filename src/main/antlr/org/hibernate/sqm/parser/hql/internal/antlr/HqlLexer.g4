@@ -60,7 +60,7 @@ STRING_LITERAL
 
 fragment
 ESCAPE_SEQUENCE
-	:	'\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
+	:	'\\' ('b'|'t'|'n'|'f'|'r'|'\\"'|'\''|'\\')
 	|	UNICODE_ESCAPE
 	|	OCTAL_ESCAPE
 	;
@@ -198,6 +198,7 @@ SET					: [sS] [eE] [tT];
 SIZE				: [sS] [iI] [zZ] [eE];
 SQRT				: [sS] [qQ] [rR] [tT];
 SUBSTRING			: [sS] [uU] [bB] [sS] [tT] [rR] [iI] [nN] [gG];
+SUBSTR				: [sS] [uU] [bB] [sS] [tT] [rR];
 SUM					: [sS] [uU] [mM];
 THEN				: [tT] [hH] [eE] [nN];
 TIMEZONE_HOUR		: [tT] [iI] [mM] [eE] [zZ] [oO] [nN] [eE] '_' [hH] [oO] [uU] [rR];

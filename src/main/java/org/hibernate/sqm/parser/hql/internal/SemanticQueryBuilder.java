@@ -366,7 +366,8 @@ public class SemanticQueryBuilder extends HqlParserBaseVisitor {
 
 	@Override
 	public SqmSelection visitSelection(HqlParser.SelectionContext ctx) {
-		SqmExpression selectExpression = visitSelectExpression( ctx.selectExpression() );
+		SqmExpression selectExpression = visitSelectExpression( ctx );
+
 		if ( selectExpression instanceof PluralAttributeBinding ) {
 			selectExpression = new PluralAttributeElementBinding( (PluralAttributeBinding) selectExpression );
 		}
@@ -429,8 +430,7 @@ public class SemanticQueryBuilder extends HqlParserBaseVisitor {
 		return aliasNode.getText();
 	}
 
-	@Override
-	public SqmExpression visitSelectExpression(HqlParser.SelectExpressionContext ctx) {
+	public SqmExpression visitSelectExpression(HqlParser.SelectionContext ctx) {
 		if ( ctx.dynamicInstantiation() != null ) {
 			return visitDynamicInstantiation( ctx.dynamicInstantiation() );
 		}
@@ -2000,6 +2000,9 @@ public class SemanticQueryBuilder extends HqlParserBaseVisitor {
 
 	@Override
 	public PositionalParameterSqmExpression visitPositionalParameter(HqlParser.PositionalParameterContext ctx) {
+		if ( ctx.INTEGER_LITERAL() == null ) {
+			throw new SemanticException( "Encountered positional parameter which did not declare position (? instead of, e.g., ?1)" );
+		}
 		final PositionalParameterSqmExpression param = new PositionalParameterSqmExpression(
 				Integer.valueOf( ctx.INTEGER_LITERAL().getText() ),
 				parameterDeclarationContextStack.getCurrent().isMultiValuedBindingAllowed()

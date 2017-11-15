@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Steve Ebersole
  */
 public class ParameterTests extends StandardModelTest {
-	@Test( expected = NumberFormatException.class )
+	@Test( expected = SemanticException.class )
 	public void testInvalidLegacyPositionalParam() {
 		// todo : should we define the rule with the integer as optional and then give a better exception?
 		interpret( "select a.basic from Something a where a.b = ?" );

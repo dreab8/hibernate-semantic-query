@@ -59,7 +59,7 @@ dependencies {
 
 	provided 'org.jboss.logging:jboss-logging-annotations:2.0.0.Final'
 
-	antlr 'org.antlr:antlr4:4.5.2'
+	antlr 'org.antlr:antlr4:4.7'
 
 	runtime 'org.antlr:antlr4-runtime:4.5.2'
 
